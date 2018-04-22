@@ -79,6 +79,32 @@ bot.on('text', (ctx) => {
         ctx.reply("hay minitas?")
     } else if (msgtext.includes("espi") && (msgtext.includes("gato") || msgtext.includes("gil") || msgtext.includes("puto"))) {
         ctx.reply(msgtext.replace("espi", "vos"))
+    } else if (msgtext.includes("witty") && msgtext.length <= 9) { // witty / che witty
+        ctx.reply("Qué?")
+    } else if (msgtext.includes("witty") && msgtext.length > 9) { // witty y algo más
+        n = Math.floor(Math.random() * 10)
+        if ( n == 0 ){
+            ctx.reply("Me lo dijo?")
+        } else if ( n == 1) {
+            ctx.reply("Me lo estaría diciendo")
+        } else if ( n == 2) {
+            ctx.reply("Me lo quisiera haber dicho")
+        } else if ( n == 3) {
+            ctx.reply("Me lo dijo")
+        } else if ( n == 4) {
+            ctx.reply("Me lo re dijo")
+        } else if ( n == 5) {
+            ctx.reply("Me lo super dijo")
+        } else if ( n == 6) {
+            ctx.reply("Me lo quiso decir?")
+        } else if ( n == 7) {
+            ctx.reply("Creo que me quiere decir algo")
+        } else if ( n == 8) {
+            ctx.reply("Creo que me quiere decir que SEGMENTATION FAULT (core dumped)")
+            ctx.reply("Nah joda, este bot es libre de bugs")
+        } else if ( n == 9) {
+            ctx.reply("Me lo super quisiera haber dicho")
+        }
     }
 })
 
