@@ -19,9 +19,33 @@ bot.on('text', (ctx) => {
     if (ctx.message.chat.id == -226076541 && ctx.message.message_id % (3*period) == period)
         ctx.reply("¿cuando sale digni?")
     if (ctx.message.chat.id == -226076541 && ctx.message.message_id % (3*period) == (2*period))
-        ctx.reply("¿cuando sale un age?")
-    if (ctx.message.chat.id == -226076541 && ctx.message.message_id % (3*period) == 0)
-        ctx.reply("¿cuando sale bicis?")
+        ctx.reply("¿cuando sale un age/bicis?")
+    if (ctx.message.chat.id == -226076541 && ctx.message.message_id % (3*period) == 0){
+        numTrivia = Math.floor(Math.random() * 10)
+        if ( numTrivia == 0) {
+            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ tiene acceso a todos tus mensajes, pero no se los vende a la NSA ni a la SIDE, él es fiel a la KGB.")
+        } else if ( numTrivia == 1) {
+            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ está hecho enteramente en JavaScript, y su código es un verdadero __espanto__ .")
+        } else if ( numTrivia == 2) {
+            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ acepta donaciones en forma de pizza y birra.")
+        } else if ( numTrivia == 3) {
+            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ está actualmente en __OVERFLOW__ grupos de Telegram. ¡Son un montón!")
+        } else if ( numTrivia == 4) {
+            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ basa sus respuestas en una red neuronal de alta profundidad, que consta de muchos if-else.")
+        } else if ( numTrivia == 5) {
+            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ procesa todos los datos del grupo, los hace un rollito, y se los mete en donde no le da el sol.")
+        } else if ( numTrivia == 6) {
+            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ está en etapa de alpha, el release estable está programado para marzo de 2054. Lo sé, ¡Estamos ansiosos!")
+        } else if ( numTrivia == 7) {
+            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ también tiene sentimientos. No lo insulten.")
+        } else if ( numTrivia == 8) {
+            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ te cebaría un mate si pudiera, pero es sólo un bot.")
+        } else if ( numTrivia == 9) {
+            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ es invulnerable a sus vanos intentos de ingeniería reversa.")
+        }
+    }
+    
+
 
     msgtext = ctx.message.text.toLowerCase()
         .replace(/á/, 'a')
@@ -100,8 +124,7 @@ bot.on('text', (ctx) => {
         } else if ( n == 7) {
             ctx.reply("Creo que me quiere decir algo")
         } else if ( n == 8) {
-            ctx.reply("Creo que me quiere decir que SEGMENTATION FAULT (core dumped)")
-            ctx.reply("Nah joda, este bot es libre de bugs")
+            ctx.reply("Creo que me quiere decir que **SEGMENTATION FAULT (core dumped)** ( __ahre__ )")
         } else if ( n == 9) {
             ctx.reply("Me lo super quisiera haber dicho")
         }
