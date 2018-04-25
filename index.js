@@ -10,44 +10,37 @@ bot.start((ctx) => ctx.reply('Welcome!'))
     savedctx.reply("Cuando sale digni?")
 }) */
 
-bot.on('text', (ctx) => {
-/*
-    if (!savedCtx && ctx.message.chat.id == -226076541) {
-        savedCtx = ctx
-    }*/
-    period = 121
-    if (ctx.message.chat.id == -226076541 && ctx.message.message_id % (3*period) == period)
-        ctx.reply("¿cuando sale digni?")
-    if (ctx.message.chat.id == -226076541 && ctx.message.message_id % (3*period) == (2*period))
-        ctx.reply("¿cuando sale un age/bicis?")
-    if (ctx.message.chat.id == -226076541 && ctx.message.message_id % (3*period) == 0){
-        numTrivia = Math.floor(Math.random() * 10)
-        if ( numTrivia == 0) {
-            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ tiene acceso a todos tus mensajes, pero no se los vende a la NSA ni a la SIDE, él es fiel a la KGB.")
-        } else if ( numTrivia == 1) {
-            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ está hecho enteramente en JavaScript, y su código es un verdadero __espanto__ .")
-        } else if ( numTrivia == 2) {
-            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ acepta donaciones en forma de pizza y birra.")
-        } else if ( numTrivia == 3) {
-            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ está actualmente en __OVERFLOW__ grupos de Telegram. ¡Son un montón!")
-        } else if ( numTrivia == 4) {
-            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ basa sus respuestas en una red neuronal de alta profundidad, que consta de muchos if-else.")
-        } else if ( numTrivia == 5) {
-            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ procesa todos los datos del grupo, los hace un rollito, y se los mete en donde no le da el sol.")
-        } else if ( numTrivia == 6) {
-            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ está en etapa de alpha, el release estable está programado para marzo de 2054. Lo sé, ¡Estamos ansiosos!")
-        } else if ( numTrivia == 7) {
-            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ también tiene sentimientos. No lo insulten.")
-        } else if ( numTrivia == 8) {
-            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ te cebaría un mate si pudiera, pero es sólo un bot.")
-        } else if ( numTrivia == 9) {
-            ctx.reply("**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ es invulnerable a sus vanos intentos de ingeniería reversa.")
-        }
-    }
-    
+trivia = "**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ "
+triviamsj = ["tiene acceso a todos tus mensajes, pero no se los vende a la NSA ni a la SIDE, él es fiel a la KGB.",
+             "está hecho enteramente en JavaScript, y su código es un verdadero __espanto__ .",
+             "acepta donaciones en forma de pizza y birra.",
+             "está actualmente en __OVERFLOW__ grupos de Telegram. ¡Son un montón!",
+             "basa sus respuestas en una red neuronal de alta profundidad, que consta de muchos if-else.",
+             "procesa todos los datos del grupo, los hace un rollito, y se los mete en donde no le da el sol.",
+             "está en etapa de alpha, el release estable está programado para marzo de 2054. Lo sé, ¡Estamos ansiosos!",
+             "también tiene sentimientos. No lo insulten.",
+             "te cebaría un mate si pudiera, pero es sólo un bot.",
+             "es invulnerable a sus vanos intentos de ingeniería reversa."
+            ]
 
+cuandoSale = "¿Cuándo sale "
+cuandoSaleMsj = ["digni?", "un age?", "bicis?"]
 
-    msgtext = ctx.message.text.toLowerCase()
+meLoDijo = ["Me lo dijo?",
+            "Me lo estaría diciendo",
+            "Me lo quisiera haber dicho",
+            "Me lo dijo",
+            "Me lo re dijo",
+            "Me lo super dijo",
+            "Me lo quiso decir?",
+            "Creo que me quiere decir algo",
+            "Creo que me quiere decir que **SEGMENTATION FAULT (core dumped)**",
+            "Me lo super quisiera haber dicho",
+            "Creo que le habla a usted",
+            ]
+
+toAscii = function(str) {
+        return str.toLowerCase()
         .replace(/á/, 'a')
         .replace(/é/, 'e')
         .replace(/í/, 'i')
@@ -56,31 +49,51 @@ bot.on('text', (ctx) => {
         .replace(/ü/, 'u')
         .replace(/¿/, '?')
         .replace(/\./, '')
+}
 
-    if ((msgtext.includes("dign") || msgtext.includes("age")) && msgtext.indexOf("sale") == 0)
+bot.on('text', (ctx) => {
+
+    /*if (!savedCtx && ctx.message.chat.id == -226076541) {
+        savedCtx = ctx
+    }*/
+
+    period = 121
+    index = ctx.message.message_id
+    if (index % period == 0) {
+        index = Math.floor(index/period)
+        if (ctx.message.chat.id == -226076541 && Math.random() > .5) { //Smaugs
+            ctx.reply(cuandoSale + cuandoSaleMsg[index % cuandoSaleMsg.length])
+        } else {
+            ctx.reply(trivia + triviamsj[index % triviaMsg.length])
+        }
+    }
+
+    msgtext = toAscii(ctx.message.text)
+
+    if (msgtext.match("dign|age") && msgtext.indexOf("sale") == 0)
         ctx.replyWithSticker("CAADAQAD0gAD6QqSCeW2bdJqwvZ1Ag") //sale
-    else if (msgtext.indexOf("tu vieja") == 0)
+    else if (msgtext == "tu vieja")
         ctx.replyWithSticker("CAADAQADaAIAAm6kFAhx6aR_uItdqAI") //te lo dijo
     
-    if (ctx.message.from.id === 160565993) return 1;
+    if (ctx.message.from.id === 160565993 && ctx.chat.id != -258588711) return 1; //Yo, test
     //if (ctx.message.message_id % 11 === 0) return 1;
 
-    if (msgtext.indexOf("quien") <= 1 && msgtext.indexOf("quien") >= 0 && msgtext.slice(-1) === "?" && !msgtext.includes("quienes")) {
+    if (msgtext.match("^.?quien") && !msgtext.includes("quienes") && msgtext.slice(-1) === "?") {
         ctx.reply("Tu vieja")
-    } else if ((msgtext.indexOf("a quien") == 0 || msgtext.indexOf("a alguien") == 0 || msgtext.indexOf("a alguno") == 0) && msgtext.slice(-1) === "?") {
+    } else if (msgtext.match("^a (quien|alguien|alguno)") && msgtext.slice(-1) === "?") {
         ctx.reply("A tu vieja")
-    } else if (msgtext.indexOf("alguien") <= 5 && msgtext.indexOf("alguien") >= 0 && msgtext.slice(-1) === "?") {
+    } else if (msgtext.match("^.{0,4}(alguno|alguien)") && msgtext.slice(-1) === "?") {
         ctx.reply("Tu vieja")
-    } else if (msgtext.indexOf("alguno") <= 5 && msgtext.indexOf("alguno") >= 0 && msgtext.slice(-1) === "?") {
-        ctx.reply("Tu vieja")
-    } else if ((msgtext.includes("larga") || msgtext.includes("grande") || msgtext.includes("gigante") || msgtext.includes("enorme") || msgtext.includes("magnifica") || msgtext.includes("sabrosa")  || msgtext.includes("deliciosa")) && !msgtext.includes("no") && !msgtext.includes("poco") && !msgtext.includes("opuesto")) {
-        ctx.reply("Como ésta")
-    } else if ((msgtext.includes("corta") || msgtext.includes("chica") || msgtext.includes("microscopica")) && !msgtext.includes("no") && !msgtext.includes("poco") && !msgtext.includes("opuesto") && !msgtext.includes("chicas")) {
-        ctx.reply("Como la tuya")
-    } else if (msgtext.indexOf("por que") == 0 && msgtext.slice(-1) === "?") {
+    } else if (msgtext.match("^por que$") && msgtext.slice(-1) === "?") {
         ctx.reply("Porque sos un forro")
     } else if (msgtext.indexOf("xq") == 0 && msgtext.slice(-1) === "?") {
         ctx.reply("xq sos un forro")
+    } else if (msgtext == "donde?") {
+        ctx.reply("donde caga el conde")
+    } else if (msgtext.match("larga|grande|gigante|enorme|magnifica|sabrosa|deliciosa") && !msgtext.match("no|poco|opuesto")) {
+        ctx.reply("Como ésta")
+    } else if (msgtext.match("corta|chica|microscopica") && !msgtext.match("no|poco|opuesto|chicas")) {
+        ctx.reply("Como la tuya")
     } else if (msgtext.includes("llendo")) {
         ctx.reply("*yendo")
         ctx.reply("forro")
@@ -93,7 +106,7 @@ bot.on('text', (ctx) => {
     } else if (msgtext.includes("domingo") && msgtext.includes("10") && msgtext.includes("am")) {
         ctx.reply("Nadie se levanta a esa hora")
         ctx.reply("forro")
-    } else if (msgtext.includes("no puedo") && (msgtext.includes("hoy") || msgtext.includes("mañana"))) {
+    } else if (msgtext.includes("no puedo") && msgtext.match("hoy|mañana")) {
         ctx.reply("🐔")
     } else if (msgtext.includes("no puedo") && msgtext.includes("al final")) {
         ctx.replyWithSticker("CAADAQADdwAD6QqSCfn5rSTvqA21Ag") //B85
@@ -101,33 +114,13 @@ bot.on('text', (ctx) => {
         ctx.replyWithSticker("CAADAQADJgAD6QqSCRNz5RHk65xxAg") //Age
     } else if (msgtext.includes("festej") && msgtext.includes("cumple")) {
         ctx.reply("hay minitas?")
-    } else if (msgtext.includes("espi") && (msgtext.includes("gato") || msgtext.includes("gil") || msgtext.includes("puto"))) {
+    } else if (msgtext.includes("espi") && (msgtext.match("gato|gil|puto"))) {
         ctx.reply(msgtext.replace("espi", "vos"))
     } else if (msgtext.includes("witty") && msgtext.length <= 9) { // witty / che witty
         ctx.reply("Qué?")
     } else if (msgtext.includes("witty") && msgtext.length > 9) { // witty y algo más
-        n = Math.floor(Math.random() * 10)
-        if ( n == 0 ){
-            ctx.reply("Me lo dijo?")
-        } else if ( n == 1) {
-            ctx.reply("Me lo estaría diciendo")
-        } else if ( n == 2) {
-            ctx.reply("Me lo quisiera haber dicho")
-        } else if ( n == 3) {
-            ctx.reply("Me lo dijo")
-        } else if ( n == 4) {
-            ctx.reply("Me lo re dijo")
-        } else if ( n == 5) {
-            ctx.reply("Me lo super dijo")
-        } else if ( n == 6) {
-            ctx.reply("Me lo quiso decir?")
-        } else if ( n == 7) {
-            ctx.reply("Creo que me quiere decir algo")
-        } else if ( n == 8) {
-            ctx.reply("Creo que me quiere decir que **SEGMENTATION FAULT (core dumped)** ( __ahre__ )")
-        } else if ( n == 9) {
-            ctx.reply("Me lo super quisiera haber dicho")
-        }
+        n = Math.floor(Math.random() * meLoDijo.length)
+        ctx.reply(meLoDijo[n])
     }
 })
 
