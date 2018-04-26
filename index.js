@@ -10,11 +10,11 @@ bot.start((ctx) => ctx.reply('Welcome!'))
     savedctx.reply("Cuando sale digni?")
 }) */
 
-trivia = "**¿Sabías que ... ?**  -  #WittyTrivia \n  __WittyBot__ "
+trivia = "*¿Sabías que ... ?*  -  #WittyTrivia \n  _WittyBot_ "
 triviamsj = ["tiene acceso a todos tus mensajes, pero no se los vende a la NSA ni a la SIDE, él es fiel a la KGB.",
-             "está hecho enteramente en JavaScript, y su código es un verdadero __espanto__ .",
+             "está hecho enteramente en JavaScript, y su código es un verdadero _espanto_ .",
              "acepta donaciones en forma de pizza y birra.",
-             "está actualmente en __OVERFLOW__ grupos de Telegram. ¡Son un montón!",
+             "está actualmente en _OVERFLOW_ grupos de Telegram. ¡Son un montón!",
              "basa sus respuestas en una red neuronal de alta profundidad, que consta de muchos if-else.",
              "procesa todos los datos del grupo, los hace un rollito, y se los mete en donde no le da el sol.",
              "está en etapa de alpha, el release estable está programado para marzo de 2054. Lo sé, ¡Estamos ansiosos!",
@@ -34,7 +34,7 @@ meLoDijo = ["Me lo dijo?",
             "Me lo super dijo",
             "Me lo quiso decir?",
             "Creo que me quiere decir algo",
-            "Creo que me quiere decir que **SEGMENTATION FAULT (core dumped)**",
+            "Creo que me quiere decir que *SEGMENTATION FAULT (core dumped)*",
             "Me lo super quisiera haber dicho",
             "Creo que le habla a usted",
             ]
@@ -62,9 +62,9 @@ bot.on('text', (ctx) => {
     if (index % period == 0) {
         index = Math.floor(index/period)
         if (ctx.message.chat.id == -226076541 && Math.random() > .5) { //Smaugs
-            ctx.reply(cuandoSale + cuandoSaleMsg[index % cuandoSaleMsg.length])
+            ctx.reply(cuandoSale + cuandoSaleMsj[index % cuandoSaleMsj.length])
         } else {
-            ctx.reply(trivia + triviamsj[index % triviaMsg.length])
+            ctx.replyWithMarkdown(trivia + triviamsj[index % triviamsj.length])
         }
     }
 
@@ -84,7 +84,7 @@ bot.on('text', (ctx) => {
         ctx.reply("A tu vieja")
     } else if (msgtext.match("^.{0,4}(alguno|alguien)") && msgtext.slice(-1) === "?") {
         ctx.reply("Tu vieja")
-    } else if (msgtext.match("^por que$") && msgtext.slice(-1) === "?") {
+    } else if (msgtext.match("^por que") && msgtext.slice(-1) === "?") {
         ctx.reply("Porque sos un forro")
     } else if (msgtext.indexOf("xq") == 0 && msgtext.slice(-1) === "?") {
         ctx.reply("xq sos un forro")
@@ -114,13 +114,13 @@ bot.on('text', (ctx) => {
         ctx.replyWithSticker("CAADAQADJgAD6QqSCRNz5RHk65xxAg") //Age
     } else if (msgtext.includes("festej") && msgtext.includes("cumple")) {
         ctx.reply("hay minitas?")
-    } else if (msgtext.includes("espi") && (msgtext.match("gato|gil|puto"))) {
+    } else if (msgtext.includes("espi") && msgtext.match("gato|gil|puto")) {
         ctx.reply(msgtext.replace("espi", "vos"))
     } else if (msgtext.includes("witty") && msgtext.length <= 9) { // witty / che witty
         ctx.reply("Qué?")
     } else if (msgtext.includes("witty") && msgtext.length > 9) { // witty y algo más
         n = Math.floor(Math.random() * meLoDijo.length)
-        ctx.reply(meLoDijo[n])
+        ctx.replyWithMarkdown(meLoDijo[n])
     }
 })
 
