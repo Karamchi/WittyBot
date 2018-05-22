@@ -1,18 +1,19 @@
-//const schedule = require('node-schedule')
+const schedule = require('node-schedule')
 const Telegraf = require('telegraf')
 
 const bot = new Telegraf(TOKEN)
 //var savedCtx = undefined
+groups = [-226076541]
+index = 0
 
-bot.start((ctx) => ctx.reply('Welcome!'))
-
-/*schedule.scheduleJob('0 12 * * *', () => {
-    savedctx.reply("Cuando sale digni?")
-}) */
+bot.start((ctx) => {
+        ctx.reply('Welcome!')
+        groups.push(ctx.message.chat.id)
+    })
 
 trivia = "*¿Sabías que ... ?*  -  #WittyTrivia \n  _WittyBot_ "
 triviamsj = ["tiene acceso a todos tus mensajes, pero no se los vende a la NSA ni a la SIDE, él es fiel a la KGB.",
-             "está hecho enteramente en JavaScript, y su código es un verdadero _espanto_ .",
+             "está hecho enteramente en JavaScript, y su código es un verdadero _espanto_.",
              "acepta donaciones en forma de pizza y birra.",
              "está actualmente en _OVERFLOW_ grupos de Telegram. ¡Son un montón!",
              "basa sus respuestas en una red neuronal de alta profundidad, que consta de muchos if-else.",
@@ -39,6 +40,16 @@ meLoDijo = ["Me lo dijo?",
             "Creo que le habla a usted",
             ]
 
+cumpleanos = [
+            "1-13", //Murga
+            "2-24", //Gastón
+            "5-24", //Rulo
+            "8-6",  //Rouli
+            "10-2", //Gus
+            "10-5", //Colo
+            "10-21", //Tomo
+            ]
+
 toAscii = function(str) {
         return str.toLowerCase()
         .replace(/á/, 'a')
@@ -51,23 +62,28 @@ toAscii = function(str) {
         .replace(/\./, '')
 }
 
-bot.on('text', (ctx) => {
+schedule.scheduleJob('0 21 * * *', () => {
+    index += 1
+    groups.forEach(function(group) {
+        bot.telegram.sendMessage(group, trivia + triviamsj[index % triviamsj.length], {parse_mode:"Markdown"})
+    })
+})
 
-    /*if (!savedCtx && ctx.message.chat.id == -226076541) {
-        savedCtx = ctx
-    }*/
-
-    period = 121
-    index = ctx.message.message_id
-    if (index % period == 0) {
-        index = Math.floor(index/period)
-        if (ctx.message.chat.id == -226076541 && Math.random() > .5) { //Smaugs
-            ctx.reply(cuandoSale + cuandoSaleMsj[index % cuandoSaleMsj.length])
-        } else {
-            ctx.replyWithMarkdown(trivia + triviamsj[index % triviamsj.length])
+schedule.scheduleJob('0 15 * * *', () => {
+    found = false
+    cumpleanos.forEach(function(birthday) {
+        birthdate = new Date(birthday + "-1970")
+        if (new Date().getMonth() == birthdate.getMonth() && new Date().getDate() == birthdate.getDate()) {
+                found = true
         }
-    }
+    })
+    if (found)
+        bot.telegram.sendSticker(-226076541, "CAADAQADRQMAAtyP1QToOlnHF3aWcwI") // Smaugs
+    else
+        bot.telegram.sendMessage(-226076541, cuandoSale + cuandoSaleMsj[index % cuandoSaleMsj.length])
+})
 
+bot.on('text', (ctx) => {
     msgtext = toAscii(ctx.message.text)
 
     if (msgtext.match("dign|age") && msgtext.indexOf("sale") == 0)
@@ -78,22 +94,23 @@ bot.on('text', (ctx) => {
     if (ctx.message.from.id === 160565993 && ctx.chat.id != -258588711) return 1; //Yo, test
     //if (ctx.message.message_id % 11 === 0) return 1;
 
-    if (msgtext.match("^.?quien") && !msgtext.includes("quienes") && msgtext.slice(-1) === "?") {
-        ctx.reply("Tu vieja")
+    reply = undefined
+    if (msgtext.match("^.?quien ") && !msgtext.includes("quienes") && msgtext.slice(-1) === "?") {
+        reply = "Tu vieja"
     } else if (msgtext.match("^a (quien|alguien|alguno)") && msgtext.slice(-1) === "?") {
-        ctx.reply("A tu vieja")
+        reply = "A tu vieja"
     } else if (msgtext.match("^.{0,4}(alguno|alguien)") && msgtext.slice(-1) === "?") {
-        ctx.reply("Tu vieja")
+        reply = "Tu vieja"
     } else if (msgtext.match("^por que") && msgtext.slice(-1) === "?") {
-        ctx.reply("Porque sos un forro")
+        reply = "Porque sos un forro"
     } else if (msgtext.indexOf("xq") == 0 && msgtext.slice(-1) === "?") {
-        ctx.reply("xq sos un forro")
+        reply = "xq sos un forro"
     } else if (msgtext == "donde?") {
         ctx.reply("donde caga el conde")
     } else if (msgtext.match("larga|grande|gigante|enorme|magnifica|sabrosa|deliciosa") && !msgtext.match("no|poco|opuesto")) {
-        ctx.reply("Como ésta")
-    } else if (msgtext.match("corta|chica|microscopica") && !msgtext.match("no|poco|opuesto|chicas")) {
-        ctx.reply("Como la tuya")
+        reply = "Como ésta"
+    } else if (msgtext.match("corta |chica|microscopica") && !msgtext.match("no|poco|opuesto|chicas")) {
+        reply = "Como la tuya"
     } else if (msgtext.includes("llendo")) {
         ctx.reply("*yendo")
         ctx.reply("forro")
@@ -120,8 +137,15 @@ bot.on('text', (ctx) => {
         ctx.reply("Qué?")
     } else if (msgtext.includes("witty") && msgtext.length > 9) { // witty y algo más
         n = Math.floor(Math.random() * meLoDijo.length)
-        ctx.replyWithMarkdown(meLoDijo[n])
+        ctx.reply(meLoDijo[n])
+    } else if (msgtext.slice(-1) == "8" || msgtext.slice(-4) == "ocho") {
+        reply = "El culo te abrocho"
     }
+
+    if (Math.random() > .4) {
+        ctx.replyWithMarkdown(reply)
+    }
+    
 })
 
 bot.on('audio', (ctx) => ctx.replyWithSticker("CAADAQADiQADf1NpCXJ3mjKH0610Ag"))
