@@ -3,12 +3,13 @@ const Telegraf = require('telegraf')
 
 const bot = new Telegraf(TOKEN)
 //var savedCtx = undefined
-groups = [-226076541]
+groups = new Set([-226076541])
 index = 0
 
 bot.start((ctx) => {
         ctx.reply('Welcome!')
-        groups.push(ctx.message.chat.id)
+        bot.telegram.sendMessage(-258588711, "Added to group " + ctx.message.chat.id) //Test
+        groups.add(ctx.message.chat.id)
     })
 
 trivia = "*¿Sabías que ... ?*  -  #WittyTrivia \n  _WittyBot_ "
@@ -44,6 +45,7 @@ cumpleanos = [
             "1-13", //Murga
             "2-24", //Gastón
             "5-24", //Rulo
+            "6-12", //Fran
             "8-6",  //Rouli
             "10-2", //Gus
             "10-5", //Colo
@@ -83,8 +85,19 @@ schedule.scheduleJob('0 15 * * *', () => {
         bot.telegram.sendMessage(-226076541, cuandoSale + cuandoSaleMsj[index % cuandoSaleMsj.length])
 })
 
+bot.on('new_chat_members', (ctx) => {
+    if (ctx.message.new_chat_participant.id == 573582514) { //Witty
+        bot.telegram.sendMessage(-258588711, "Added to group " + ctx.message.chat.id) //Test
+        groups.add(ctx.message.chat.id)
+        groups.delete(ctx.message.from.id)
+    }
+})
+
 bot.on('text', (ctx) => {
     msgtext = toAscii(ctx.message.text)
+    
+    if (ctx.message.chat.type == "group")
+    	groups.delete(ctx.message.from.id)
 
     if (msgtext.match("dign|age") && msgtext.indexOf("sale") == 0)
         ctx.replyWithSticker("CAADAQAD0gAD6QqSCeW2bdJqwvZ1Ag") //sale
@@ -92,7 +105,6 @@ bot.on('text', (ctx) => {
         ctx.replyWithSticker("CAADAQADaAIAAm6kFAhx6aR_uItdqAI") //te lo dijo
     
     if (ctx.message.from.id === 160565993 && ctx.chat.id != -258588711) return 1; //Yo, test
-    //if (ctx.message.message_id % 11 === 0) return 1;
 
     reply = undefined
     if (msgtext.match("^.?quien ") && !msgtext.includes("quienes") && msgtext.slice(-1) === "?") {
