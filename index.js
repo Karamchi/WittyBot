@@ -2,14 +2,12 @@ const schedule = require('node-schedule')
 const Telegraf = require('telegraf')
 
 const bot = new Telegraf(TOKEN)
-//var savedCtx = undefined
-groups = new Set([-226076541])
+groups = new Set([])
 index = 0
 
 bot.start((ctx) => {
         ctx.reply('Welcome!')
-        bot.telegram.sendMessage(-258588711, "Added to group " + ctx.message.chat.id) //Test
-        groups.add(ctx.message.chat.id)
+        bot.telegram.sendMessage(-258588711, "Added by user " + JSON.stringify(ctx.message.from)) //Test
     })
 
 trivia = "*¿Sabías que ... ?*  -  #WittyTrivia \n  _WittyBot_ "
@@ -69,6 +67,7 @@ schedule.scheduleJob('0 21 * * *', () => {
     groups.forEach(function(group) {
         bot.telegram.sendMessage(group, trivia + triviamsj[index % triviamsj.length], {parse_mode:"Markdown"})
     })
+    groups = new Set([])
 })
 
 schedule.scheduleJob('0 15 * * *', () => {
@@ -88,16 +87,13 @@ schedule.scheduleJob('0 15 * * *', () => {
 bot.on('new_chat_members', (ctx) => {
     if (ctx.message.new_chat_participant.id == 573582514) { //Witty
         bot.telegram.sendMessage(-258588711, "Added to group " + ctx.message.chat.id) //Test
-        groups.add(ctx.message.chat.id)
-        groups.delete(ctx.message.from.id)
     }
 })
 
 bot.on('text', (ctx) => {
     msgtext = toAscii(ctx.message.text)
     
-    if (ctx.message.chat.type == "group")
-    	groups.delete(ctx.message.from.id)
+    groups.push(ctx.message.chat.id)
 
     if (msgtext.match("dign|age") && msgtext.indexOf("sale") == 0)
         ctx.replyWithSticker("CAADAQAD0gAD6QqSCeW2bdJqwvZ1Ag") //sale
