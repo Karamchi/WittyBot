@@ -2,23 +2,30 @@ const schedule = require('node-schedule')
 const Telegraf = require('telegraf')
 
 const bot = new Telegraf(TOKEN)
-//var savedCtx = undefined
-groups = new Set([-226076541])
-index = 0
+groups = new Set([])
+index = 6
 
 bot.start((ctx) => {
         ctx.reply('Welcome!')
-        bot.telegram.sendMessage(-258588711, "Added to group " + ctx.message.chat.id) //Test
-        groups.add(ctx.message.chat.id)
+        bot.telegram.sendMessage(-258588711, "Added by user " + JSON.stringify(ctx.message.from)) //Test
     })
 
 trivia = "*¿Sabías que ... ?*  -  #WittyTrivia \n  _WittyBot_ "
 triviamsj = ["tiene acceso a todos tus mensajes, pero no se los vende a la NSA ni a la SIDE, él es fiel a la KGB.",
              "está hecho enteramente en JavaScript, y su código es un verdadero _espanto_.",
+             "acepta sugerencias de trivias; para mandar tu idea, podés escribirla en un papel, hacer un rollito y metertela en el culo.",
+             "no tiene ningún comando para dejar de mandar trivias.",
+             "nació el 30 de marzo de 2018 a las 22:22 con un peso de 2.5 KB. Es livianito, no como tu vieja.",
+             "en el fondo a tu vieja la quiere, insulta para sobrellevar sus mambos.",
+             //"no usa tu celular para minar bitcoin. Cuántos bots pueden decir eso, eh.",
+             "no tiene witty_bot como handle porque un forro se lo afanó.",
+             "fue hecho íntegramente fuera del horario laboral. Posta. Bueno, no, mentira.",
+             "está hosteado gratuitamente en Now (https://zeit.co/now). Tu vieja en cambio no entra en el pack gratis. Ni en el pago.",
+             "no muerde la mano que lo compila",
              "acepta donaciones en forma de pizza y birra.",
              "está actualmente en _OVERFLOW_ grupos de Telegram. ¡Son un montón!",
              "basa sus respuestas en una red neuronal de alta profundidad, que consta de muchos if-else.",
-             "procesa todos los datos del grupo, los hace un rollito, y se los mete en donde no le da el sol.",
+             //"procesa todos los datos del grupo, los hace un rollito, y se los mete en donde no le da el sol.",
              "está en etapa de alpha, el release estable está programado para marzo de 2054. Lo sé, ¡Estamos ansiosos!",
              "también tiene sentimientos. No lo insulten.",
              "te cebaría un mate si pudiera, pero es sólo un bot.",
@@ -65,10 +72,11 @@ toAscii = function(str) {
 }
 
 schedule.scheduleJob('0 21 * * *', () => {
-    index += 1
     groups.forEach(function(group) {
         bot.telegram.sendMessage(group, trivia + triviamsj[index % triviamsj.length], {parse_mode:"Markdown"})
     })
+    groups = new Set([])
+    index += 1
 })
 
 schedule.scheduleJob('0 15 * * *', () => {
@@ -88,16 +96,13 @@ schedule.scheduleJob('0 15 * * *', () => {
 bot.on('new_chat_members', (ctx) => {
     if (ctx.message.new_chat_participant.id == 573582514) { //Witty
         bot.telegram.sendMessage(-258588711, "Added to group " + ctx.message.chat.id) //Test
-        groups.add(ctx.message.chat.id)
-        groups.delete(ctx.message.from.id)
     }
 })
 
 bot.on('text', (ctx) => {
     msgtext = toAscii(ctx.message.text)
     
-    if (ctx.message.chat.type == "group")
-    	groups.delete(ctx.message.from.id)
+    groups.add(ctx.message.chat.id)
 
     if (msgtext.match("dign|age") && msgtext.indexOf("sale") == 0)
         ctx.replyWithSticker("CAADAQAD0gAD6QqSCeW2bdJqwvZ1Ag") //sale
@@ -116,7 +121,7 @@ bot.on('text', (ctx) => {
     } else if (msgtext.match("^por que") && msgtext.slice(-1) === "?") {
         reply = "Porque sos un forro"
     } else if (msgtext.indexOf("xq") == 0 && msgtext.slice(-1) === "?") {
-        reply = "xq sos un forro"
+        ctx.reply("xq sos un forro")
     } else if (msgtext == "donde?") {
         ctx.reply("donde caga el conde")
     } else if (msgtext.match("larga|grande|gigante|enorme|magnifica|sabrosa|deliciosa") && !msgtext.match("no|poco|opuesto")) {
