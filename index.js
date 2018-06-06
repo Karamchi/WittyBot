@@ -1,7 +1,7 @@
 const schedule = require('node-schedule')
 const Telegraf = require('telegraf')
 
-const bot = new Telegraf(TOKEN)
+const bot = new Telegraf("API KEY HERE")
 groups = new Set([])
 index = 0
 
@@ -24,7 +24,7 @@ triviamsj = ["tiene acceso a todos tus mensajes, pero no se los vende a la NSA n
             ]
 
 cuandoSale = "¿Cuándo sale "
-cuandoSaleMsj = ["digni?", "un age?", "bicis?"]
+cuandoSaleMsj = ["digni?", "un age?", "bicis?", "sushi?"]
 
 meLoDijo = ["Me lo dijo?",
             "Me lo estaría diciendo",
@@ -49,6 +49,16 @@ cumpleanos = [
             "10-5", //Colo
             "10-21", //Tomo
             ]
+
+refranes = ["al que madruga",
+		"a caballo regalado",
+		"no por mucho madrugar",
+		"en casa de herrero",
+		"a rey muerto",
+		"muerto el perro",
+		"al que .*quiere celeste",
+		"aunque .*se vista de seda"
+		]
 
 toAscii = function(str) {
         return str.toLowerCase()
@@ -90,6 +100,12 @@ bot.on('new_chat_members', (ctx) => {
     }
 })
 
+bot.on('new_chat_title', (ctx) => {
+    if (ctx.message.new_chat_title.match("dign")) { 
+        ctx.replyWithSticker("CAADAQAD0gAD6QqSCeW2bdJqwvZ1Ag") //sale
+    }
+})
+
 bot.on('text', (ctx) => {
     msgtext = toAscii(ctx.message.text)
     
@@ -111,11 +127,11 @@ bot.on('text', (ctx) => {
         reply = "Tu vieja"
     } else if (msgtext.match("^por que") && msgtext.slice(-1) === "?") {
         reply = "Porque sos un forro"
-    } else if (msgtext.indexOf("xq") == 0 && msgtext.slice(-1) === "?") {
+    } else if (msgtext.match("^.{0,4}x.?q") && msgtext.slice(-1) === "?") {
         reply = "xq sos un forro"
     } else if (msgtext == "donde?") {
         ctx.reply("donde caga el conde")
-    } else if (msgtext.match("larga|grande|gigante|enorme|magnifica|sabrosa|deliciosa") && !msgtext.match("no|poco|opuesto")) {
+    } else if (msgtext.match("larga |grande|gigante|enorme|magnifica|sabrosa|deliciosa") && !msgtext.match("no|poco|opuesto")) {
         reply = "Como ésta"
     } else if (msgtext.match("corta |chica|microscopica") && !msgtext.match("no|poco|opuesto|chicas")) {
         reply = "Como la tuya"
@@ -148,6 +164,12 @@ bot.on('text', (ctx) => {
         ctx.reply(meLoDijo[n])
     } else if (msgtext.slice(-1) == "8" || msgtext.slice(-4) == "ocho") {
         reply = "El culo te abrocho"
+    } else if (msgtext == "que marcelo?" || msgtext.match("marcelou?$")) {
+        ctx.reply("Agachate y conocelo")
+    } else if (msgtext == "que fiesta?") {
+        ctx.reply("La de tu culo y ésta")
+    } else if (msgtext.match(refranes.join(".{0,4}$|")) {
+	ctx.reply("...se lo cogen entre todos")
     }
 
     if (Math.random() > .4) {
