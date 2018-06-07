@@ -32,6 +32,20 @@ triviamsj = ["tiene acceso a todos tus mensajes, pero no se los vende a la NSA n
              "es invulnerable a sus vanos intentos de ingeniería reversa."
             ]
 
+//user/chat ids
+const ME = 160565993
+const WITTY = 573582514
+const SMAUGS = -226076541
+const TEST = -258588711
+
+//Stickers
+const METETE = "CAADAQADRQMAAtyP1QToOlnHF3aWcwI"
+const AUDIO = "CAADAQADiQADf1NpCXJ3mjKH0610Ag"
+const B85 = "CAADAQADdwAD6QqSCfn5rSTvqA21Ag"
+const SALE = "CAADAQAD0gAD6QqSCeW2bdJqwvZ1Ag"
+const TELODIJO = "CAADAQADaAIAAm6kFAhx6aR_uItdqAI"
+const AGE = "CAADAQADJgAD6QqSCRNz5RHk65xxAg"
+
 cuandoSale = "¿Cuándo sale "
 cuandoSaleMsj = ["digni?", "un age?", "bicis?", "sushi?"]
 
@@ -99,102 +113,93 @@ schedule.scheduleJob('0 15 * * *', () => {
         }
     })
     if (found)
-        bot.telegram.sendSticker(-226076541, "CAADAQADRQMAAtyP1QToOlnHF3aWcwI") // Smaugs
+        bot.telegram.sendSticker(SMAUGS, METETE) // Smaugs
     else
-        bot.telegram.sendMessage(-226076541, cuandoSale + cuandoSaleMsj[index % cuandoSaleMsj.length])
+        bot.telegram.sendMessage(SMAUGS, cuandoSale + cuandoSaleMsj[index % cuandoSaleMsj.length])
 })
 
 bot.on('new_chat_members', (ctx) => {
-    if (ctx.message.new_chat_participant.id == 573582514) { //Witty
-        bot.telegram.sendMessage(-258588711, "Added to group " + ctx.message.chat.id) //Test
+    if (ctx.message.new_chat_participant.id == WITTY) { //Witty
+        bot.telegram.sendMessage(TEST, "Added to group " + ctx.message.chat.id) //Test
     }
 })
 
 bot.on('new_chat_title', (ctx) => {
     if (ctx.message.new_chat_title.match("dign")) { 
-        ctx.replyWithSticker("CAADAQAD0gAD6QqSCeW2bdJqwvZ1Ag") //sale
+        ctx.replyWithSticker(SALE)
     }
 })
+
+//Regla: match all, don't match any, reply, reply type
+reglas = [[["^sale.*dign|age"], [], SALE, "Sticker"], //Sale
+		[["^tu vieja$"], [], TELODIJO, "Sticker"], //Te lo dijo
+		[["^.?quien.*\\?$"], ["quienes"], "Tu vieja", "Random"],
+    	[["^a (quien|alguien|alguno).*\\?$"], [], "A tu vieja", "Text"],
+		[["^.{0,4}(alguno|alguien).*\\?$"], [], "Tu vieja", "Random"],
+		[["^por que.*\\?$"], [], "Porque sos un forro", "Random"],
+		[["^.{0,4}x.?q.*\\?$"], [], "xq sos un forro", "Text"],
+		[["^.?donde\\?$"], [], "donde caga el conde", "Text"],
+		[["larga |grande|gigante|enorme|magnifica|sabrosa|deliciosa"], ["no|poco|opuesto"], "Como ésta", "Random"],
+		[["corta |chica|microscopica"], ["no|poco|opuesto|chicas"], "Como ésta", "Random"],
+		[["llendo"], [], "*yendo", "Forro"],
+		[["^haber que"], [], "*a ver", "Forro"],
+		[["louta"], [], "a ver si la cortás con louta", "Forro"],
+		[["domingo", "10", "am"], [], "Nadie se levanta a esa hora", "Forro"],
+		[["no puedo", "hoy|mañana|ir"], [], "🐔", "Text"],
+		[["no puedo", "al final"], [], B85, "Sticker"], //B85
+		[["sale alg"], [], AGE, "Sticker"], //Age
+		[["festej", "cumple"], [], "hay minitas?", "Text"],
+		[["ocho$"], [], "El culo te abrocho", "Text"],
+		[["8$"], [], "El culo te abrocho", "Text"],
+		[["que marcelo\\?$"], [], "Agachate y conocelo", "Text"],
+		[["marcelou.?$"], [], "Agachate y conocelou", "Text"],
+	    [["que fiesta?"], [], "La de tu culo y ésta", "Text"],
+		[["que foto?"], [], "La de tu culo y mi choto", "Text"],
+    	[[refranes.join(".{0,4}$|")], [], "...se lo cogen entre todos", "Text"],
+		[["witty", "bolas|huevos"], [], "Yo sólo quería ser popular", "Text"],
+		[["sa.{2,3}mos a witty.*\\??$"], [], "CAADAQADVAAD8MuSFJGuP3uwKyXfAg", "Sticker"],
+		[["witty", "chau"], [], "CAADAQADVAAD8MuSFJGuP3uwKyXfAg", "Sticker"],
+		[["^(che,? )?witty\\??$"], [], "Qué?", "Text"],
+		[["witty.*\\?$"], [], "Me lo preguntó", "Text"]
+		]
 
 bot.on('text', (ctx) => {
     msgtext = toAscii(ctx.message.text)
     groups.add(ctx.message.chat.id)
 
-    if (msgtext.match("dign|age") && msgtext.indexOf("sale") == 0)
-        ctx.replyWithSticker("CAADAQAD0gAD6QqSCeW2bdJqwvZ1Ag") //sale
-    else if (msgtext == "tu vieja")
-        ctx.replyWithSticker("CAADAQADaAIAAm6kFAhx6aR_uItdqAI") //te lo dijo
-    
-    if (ctx.message.from.id === 160565993 && ctx.chat.id != -258588711) return 1; //Yo, test
+	if (ctx.message.forward_from != undefined) return 1;
+    if (ctx.message.from.id === ME && ctx.chat.id != -258588711) return 1; //Yo, test
 
-    reply = undefined
-    if (msgtext.match("^.?quien.*\\?$") && !msgtext.includes("quienes")) {
-        reply = "Tu vieja"
-    } else if (msgtext.match("^a (quien|alguien|alguno).*\\?$")) {
-        ctx.reply("A tu vieja")
-    } else if (msgtext.match("^.{0,4}(alguno|alguien).*\\?$")) {
-        reply = "Tu vieja"
-    } else if (msgtext.match("^por que.*\\?$")) {
-        reply = "Porque sos un forro"
-    } else if (msgtext.match("^.{0,4}x.?q.*\\?$")) {
-        ctx.reply("xq sos un forro")
-    } else if (msgtext == "donde?") {
-        ctx.reply("donde caga el conde")
-    } else if (msgtext.match("larga |grande|gigante|enorme|magnifica|sabrosa|deliciosa") && !msgtext.match("no|poco|opuesto")) {
-        reply = "Como ésta"
-    } else if (msgtext.match("corta |chica|microscopica") && !msgtext.match("no|poco|opuesto|chicas")) {
-        reply = "Como la tuya"
-    } else if (msgtext.includes("llendo")) {
-        ctx.reply("*yendo")
-        ctx.reply("forro")
-    } else if (msgtext.indexOf("haber que") == 0) {
-        ctx.reply("*a ver")
-        ctx.reply("forro")
-    } else if (msgtext.includes("louta")) {
-        ctx.reply("a ver si la cortás con louta")
-        ctx.reply("forro")
-    } else if (msgtext.includes("domingo") && msgtext.includes("10") && msgtext.includes("am")) {
-        ctx.reply("Nadie se levanta a esa hora")
-        ctx.reply("forro")
-    } else if (msgtext.includes("no puedo") && msgtext.match("hoy|mañana")) {
-        ctx.reply("🐔")
-    } else if (msgtext.includes("no puedo") && msgtext.includes("al final")) {
-        ctx.replyWithSticker("CAADAQADdwAD6QqSCfn5rSTvqA21Ag") //B85
-    } else if (msgtext.includes("sale alg")) {
-        ctx.replyWithSticker("CAADAQADJgAD6QqSCRNz5RHk65xxAg") //Age
-    } else if (msgtext.includes("festej") && msgtext.includes("cumple")) {
-        ctx.reply("hay minitas?")
-    } else if (msgtext.includes("espi") && msgtext.match("gato|gil|puto|forro")) {
+	for (i = 0; i < reglas.length; i++) {
+
+		if (reglas[i][0].every(function(regex) {return msgtext.match(regex)}) 
+			&& !reglas[i][1].some(function(regex) {return msgtext.match(regex)})) {
+			if (reglas[i][3] === "Text") {
+				ctx.replyWithMarkdown(reglas[i][2])
+			} else if (reglas[i][3] === "Sticker") {
+				ctx.replyWithSticker(reglas[i][2])
+			} else if (reglas[i][3] === "Forro") {
+				ctx.reply(reglas[i][2])
+				ctx.reply("Forro")
+			} else if (reglas[i][3] === "Random" && Math.random() > .4) {
+				ctx.replyWithMarkdown(reglas[i][2])
+			}
+			return 1
+		}
+	}
+    
+    if (msgtext.includes("espi") && msgtext.match("gato|gil|puto|forro|chupala")) {
         ctx.reply(msgtext.replace("espi", "vos"))
-    } else if (msgtext.includes("witty") && msgtext.match("gato|gil|puto|forro")) {
+    } else if (msgtext.includes("witty") && msgtext.match("gato|gil|puto|forro|chupala")) {
         ctx.reply(msgtext.replace("witty", "vos"))
-    } else if (msgtext.includes("witty") && msgtext.length <= 9) { // witty / che witty
-        ctx.reply("Qué?")
-    } else if (msgtext.includes("witty") && msgtext.length > 9 && msgtext.slice(-1) === "?") { // witty y algo más
-        ctx.reply("Me lo preguntó")
-    } else if (msgtext.includes("witty") && msgtext.length > 9) { // witty y algo más
+    } else if (msgtext.includes("witty") && msgtext.includes(" sos ")) { // witty y algo más
         n = Math.floor(Math.random() * meLoDijo.length)
         ctx.reply(meLoDijo[n])
-    } else if (msgtext.slice(-1) == "8" || msgtext.match("ocho$")) {
-        reply = "El culo te abrocho"
-    } else if (msgtext.match("que marcelo\\?$")) {
-        ctx.reply("Agachate y conocelo")
-    } else if (msgtext.match("marcelou\\?$")) {
-        ctx.reply("Agachate y conocelou")
-    } else if (msgtext == "que fiesta?") {
-        ctx.reply("La de tu culo y ésta")
-    } else if (msgtext.match(refranes.join(".{0,4}$|"))) {
-	    ctx.reply("...se lo cogen entre todos")
-    }
-
-    if (Math.random() > .4 && reply != undefined) {
-        ctx.replyWithMarkdown(reply)
-    }
-    
+	}
 })
 
-bot.on('audio', (ctx) => ctx.replyWithSticker("CAADAQADiQADf1NpCXJ3mjKH0610Ag"))
-bot.on('voice', (ctx) => ctx.replyWithSticker("CAADAQADiQADf1NpCXJ3mjKH0610Ag"))
+bot.on('audio', (ctx) => ctx.replyWithSticker(AUDIO))
+bot.on('voice', (ctx) => ctx.replyWithSticker(AUDIO))
 
 bot.startPolling()
 
