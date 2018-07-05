@@ -3,7 +3,7 @@ const Telegraf = require('telegraf')
 
 const bot = new Telegraf(TOKEN)
 groups = new Set([])
-index = 14
+index = 16
 
 bot.start((ctx) => {
         ctx.reply('Welcome!')
@@ -131,7 +131,7 @@ bot.on('new_chat_title', (ctx) => {
 })
 
 //Regla: match all, don't match any, reply, reply type
-reglas = [[["^sale.*dign|age"], [], SALE, "Sticker"], //Sale
+reglas = [[["^sale.*(dign|age)"], [], SALE, "Sticker"], //Sale
 		[["^tu vieja$"], [], TELODIJO, "Sticker"], //Te lo dijo
 		[["^.?quien.*\\?$"], ["quienes"], "Tu vieja", "Random"],
     	[["^a (quien|alguien|alguno).*\\?$"], [], "A tu vieja", "Text"],
@@ -145,8 +145,8 @@ reglas = [[["^sale.*dign|age"], [], SALE, "Sticker"], //Sale
 		[["^haber que"], [], "*a ver", "Forro"],
 		[["louta"], [], "a ver si la cortás con louta", "Forro"],
 		[["domingo", "10", "am"], [], "Nadie se levanta a esa hora", "Forro"],
-		[["no puedo", "hoy|mañana|ir"], [], "🐔", "Text"],
-		[["no puedo", "al final"], [], B85, "Sticker"], //B85
+		[["no puedo|se me complica", "hoy|mañana|ir"], [], "🐔", "Text"],
+		[["no puedo|se me complica", "al final"], [], B85, "Sticker"], //B85
 		[["sale alg"], [], AGE, "Sticker"], //Age
 		[["festej", "cumple"], [], "hay minitas?", "Text"],
 		[["ocho$"], [], "El culo te abrocho", "Text"],
@@ -164,6 +164,7 @@ reglas = [[["^sale.*dign|age"], [], SALE, "Sticker"], //Sale
 		]
 
 bot.on('text', (ctx) => {
+
     msgtext = toAscii(ctx.message.text)
     groups.add(ctx.message.chat.id)
 
@@ -181,21 +182,23 @@ bot.on('text', (ctx) => {
 			} else if (reglas[i][3] === "Forro") {
 				ctx.reply(reglas[i][2])
 				ctx.reply("Forro")
-			} else if (reglas[i][3] === "Random" && Math.random() > .4) {
+			} else if (reglas[i][3] === "Random" && Math.random() > .5) {
 				ctx.replyWithMarkdown(reglas[i][2])
 			}
 			return 1
 		}
 	}
-    
+
     if (msgtext.includes("espi") && msgtext.match("gato|gil|puto|forro|chupala")) {
-        ctx.reply(msgtext.replace("espi", "vos"))
-    } else if (msgtext.includes("witty") && msgtext.match("gato|gil|puto|forro|chupala")) {
-        ctx.reply(msgtext.replace("witty", "vos"))
-    } else if (msgtext.includes("witty") && msgtext.includes(" sos ")) { // witty y algo más
+        ctx.reply(msgtext.replace("espi", "vos").replace("es", "sos"))
+    } else if (msgtext.split(" ").indexOf("witty") > -1 && msgtext.match("gato|gil|puto|forro|chupala") && !msgtext.match("no|nunca")) {
+        ctx.reply(msgtext.replace("witty", "vos").replace("es", "sos"))
+    } else if (msgtext.split(" ").indexOf("witty") > -1 && msgtext.split(" ").indexOf("sos") > -1) { // witty y algo más
         n = Math.floor(Math.random() * meLoDijo.length)
         ctx.reply(meLoDijo[n])
-	}
+	} else if (msgtext.split(" ").indexOf("witty") > -1 && msgtext.match("te amo|crack")) {
+        ctx.reply("😘")
+    } 
 })
 
 bot.on('audio', (ctx) => ctx.replyWithSticker(AUDIO))
